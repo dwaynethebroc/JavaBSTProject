@@ -13,8 +13,8 @@ public class Node {
         this.right = null;
     }
 
-    static String menu() {
-        System.out.print("Menu: \n\n" +
+    static String menu(Scanner scanner) {
+        System.out.print("\nMenu: \n\n" +
                 "1)Create a binary search tree \n" +
                 "2)Add a node\n" +
                 "3)Delete a node\n" +
@@ -40,12 +40,14 @@ public class Node {
         return root;
     }
 
-    static Node makeNodeTree(int[] initialArray) {
-        Node root = null;
-        for (int data : initialArray) {
-            root = insert(root, data);
+    static Node makeNodeTree(int[] initialArray, int start, int end) {
+        if (start > end) {
+            return null;
         }
-
+        int mid = (start + end) / 2;
+        Node root = new Node(initialArray[mid]);
+        root.left = makeNodeTree(initialArray, start, mid - 1);
+        root.right = makeNodeTree(initialArray, mid + 1, end);
         return root;
     }
 
@@ -60,9 +62,9 @@ public class Node {
             return root;
         }
 
-        if (root.data < nodeToDelete) {
+        if (nodeToDelete < root.data) {
             root.left = deleteNode(nodeToDelete, root.left);
-        } else if (root.data > nodeToDelete) {
+        } else if (nodeToDelete > root.data) {
             root.right = deleteNode(nodeToDelete, root.right);
         } else {
             // root.data == nodeToDelete
@@ -75,12 +77,24 @@ public class Node {
                 return root.right;
             } else {
                 // root has two children
-
+                // we are on the root, go right one node, then left until min value found
+                // replace node
+                // delete orignal replacement node further down tree
+                Node newMinNode = findMinimumValue(root.right);
+                root.data = newMinNode.data;
+                root.right = deleteNode(newMinNode.data, root.right);
             }
         }
 
         return root;
 
+    }
+
+    static Node findMinimumValue(Node root) {
+        while (root.left != null) {
+            root = root.left;
+        }
+        return root;
     }
 
     static void printTreeInOrder(Node treeRoot) {
@@ -113,43 +127,57 @@ public class Node {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int[] standardArray = { 1, 2, 3, 4, 5, 6, 7 };
-        Node standardTree = makeNodeTree(standardArray);
-        String response = menu();
-        System.out.println(response);
+        Node standardTree = makeNodeTree(standardArray, 0, standardArray.length - 1);
+        String response = "";
 
-        switch (response) {
-            case "1":
-                standardTree = makeNodeTree(standardArray);
-                break;
-            case "2":
-                System.out.print("What is the value of the Node you want to add?: ");
-                String inputAdd = scanner.nextLine();
+        while (!response.equals("7")) {
+            response = menu(scanner);
+            System.out.println(response);
 
-                int inputToIntA = Integer.parseInt(inputAdd);
+            switch (response) {
+                case "1":
+                    System.out.print("Binary Tree Created\n");
+                    standardTree = makeNodeTree(standardArray, 0, standardArray.length - 1);
+                    break;
+                case "2":
+                    System.out.print("What is the value of the Node you want to add?: ");
+                    String inputAdd = scanner.nextLine();
 
-                standardTree = insert(standardTree, inputToIntA);
-                break;
-            case "3":
-                System.out.print("What is the value of the Node you want deleted?: ");
-                String inputDelete = scanner.nextLine();
+                    int inputToIntA = Integer.parseInt(inputAdd);
 
-                int inputToIntD = Integer.parseInt(inputDelete);
-                deleteNode(inputToIntD, standardTree);
-                break;
-            case "4":
-                printTreeInOrder(standardTree);
-                break;
-            case "5":
-                printTreePreOrder(standardTree);
-                break;
-            case "6":
-                printTreePostOrder(standardTree);
-                break;
-            case "7":
-                System.out.println("Program has been exited. Have a nice day");
-                scanner.close();
-                break;
+                    standardTree = insert(standardTree, inputToIntA);
+                    System.out.print("Node" + inputAdd + "added");
+                    break;
+                case "3":
+                    System.out.print("What is the value of the Node you want deleted?: ");
+                    String inputDelete = scanner.nextLine();
+
+                    int inputToIntD = Integer.parseInt(inputDelete);
+                    standardTree = deleteNode(inputToIntD, standardTree);
+                    System.out.print("Node" + inputDelete + "deleted");
+                    break;
+                case "4":
+                    System.out.print("InOrder Traversal: ");
+                    printTreeInOrder(standardTree);
+                    System.out.println();
+                    break;
+                case "5":
+                    System.out.print("PreOrder Traversal: ");
+                    printTreePreOrder(standardTree);
+                    System.out.println();
+                    break;
+                case "6":
+                    System.out.print("PostOrder Traversal: ");
+                    printTreePostOrder(standardTree);
+                    System.out.println();
+                    break;
+                case "7":
+                    System.out.println("Program has been exited. Have a nice day");
+                    System.out.println();
+                    break;
+            }
         }
-    }
 
+        scanner.close();
+    }
 }
