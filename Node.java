@@ -102,7 +102,13 @@ public class Node {
             return;
         }
         printTreeInOrder(treeRoot.left);
-        System.out.print(treeRoot.data + " ");
+        System.out.print("Node " + treeRoot.data + ": ");
+        if (treeRoot.left != null)
+            System.out.print("Left=" + treeRoot.left.data + " ");
+        if (treeRoot.right != null)
+            System.out.print("Right=" + treeRoot.right.data + " ");
+        System.out.println();
+
         printTreeInOrder(treeRoot.right);
     }
 
@@ -110,7 +116,12 @@ public class Node {
         if (treeRoot == null) {
             return;
         }
-        System.out.print(treeRoot.data + " ");
+        System.out.print("Node " + treeRoot.data + ": ");
+        if (treeRoot.left != null)
+            System.out.print("Left=" + treeRoot.left.data + " ");
+        if (treeRoot.right != null)
+            System.out.print("Right=" + treeRoot.right.data + " ");
+        System.out.println();
         printTreePreOrder(treeRoot.left);
         printTreePreOrder(treeRoot.right);
     }
@@ -121,7 +132,13 @@ public class Node {
         }
         printTreePostOrder(treeRoot.left);
         printTreePostOrder(treeRoot.right);
-        System.out.print(treeRoot.data + " ");
+        System.out.print("Node " + treeRoot.data + ": ");
+        if (treeRoot.left != null)
+            System.out.print("Left=" + treeRoot.left.data + " ");
+        if (treeRoot.right != null)
+            System.out.print("Right=" + treeRoot.right.data + " ");
+        System.out.println();
+
     }
 
     public static void main(String[] args) {
